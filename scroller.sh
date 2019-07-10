@@ -36,8 +36,6 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-pointsize=100
-
 if [ "$1" == "" ]; then
     echo 'Usage: ./scroller.sh [options] "Phrase to scroll"'
     echo 'A working ImageMagick installation is required for this tool!'
@@ -65,21 +63,23 @@ else
         background="white"
     fi
 
-    convert -fill "$color" -font "$font" -background "$background" -pointsize $pointsize label:"$1" text.png
+    pointsize=100 #100 seems just about right for 128x128 emoji
+
+    convert -fill "$color" -font "$font" -background "$background" -pointsize "$pointsize" label:"$1" text.png
     width=$(identify text.png | cut -d ' ' -f 3 | cut -d 'x' -f 1)
-    newwidth=`expr $width + $pointsize \* 2`
+    newwidth=`expr "$width" + "$pointsize" \* 2`
     mogrify -gravity center -extent "$newwidth"x128 text.png
     width=$(identify text.png | cut -d ' ' -f 3 | cut -d 'x' -f 1)
     slice=20
     scroll=0
-    steps=`expr $width / $slice`
+    steps=`expr "$width" / "$slice"`
     for increment in $(seq 0 "$steps")
         do
             convert text.png -crop 128x128+"$scroll"+0 "text$increment.png"
-            let scroll=`expr $scroll + $slice`
+            let scroll=`expr "$scroll" + "$slice"`
         done
 fi
-convert -delay 6 -size 128x128 -page +0+0 text%d.png[0-$steps] -loop 0 ../"$1.gif"
+convert -delay 6 -size 128x128 -page +0+0 text%d.png[0-"$steps"] -loop 0 ../"$1.gif"
 cd ..
 convert "$1.gif" -fuzz 5% -coalesce -layers OptimizePlus "$1.gif"
 convert "$1.gif" +matte +map "$1.gif"
