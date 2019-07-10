@@ -1,28 +1,68 @@
 #!/bin/bash
+
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -c|--color)
+    color="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -b|--background)
+    background="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -f|--font)
+    font="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+echo "$color  $background  $font  $1"
+
+pointsize=100
+
 if [ "$1" == "" ]; then
-    echo 'Usage: ./scroller.sh "Phrase to scroll" [fontname] [color]'
-    echo 'To get available fonts, type "convert -list font | grep Font:"'
-    echo 'Most normally named colors are available, or go to' 
-    echo 'https://imagemagick.org/script/color.php for a more complete listing.'
-    echo 'WARNING: Some fonts are wholly unsuitable due to large y stroke dimensions.'
-    echo 'The defaults are Arial using the color black.'
+    echo 'Usage: ./scroller.sh [options] "Phrase to scroll"'
+    echo 'A working ImageMagick installation is required for this tool!'
+    echo 'Options:' 
+    echo '    -f <font name>, --font <font name>, default font is arial.'
+    echo '        To get available fonts, type "convert -list font | grep Font:"'
+    echo '        WARNING: Some fonts are wholly unsuitable due to excessive y dimensions'
+    echo '    -c <color>, --color <color>, default color is black'
+    echo '    -b <color>, --background <color>, default color is white'
+    echo '        Most normally named colors are available for -c or -b, or go to' 
+    echo '        https://imagemagick.org/script/color.php for a more complete listing.'
+    echo '        You can also use standard RGB #000000 - #FFFFFF'
+    echo ''
     exit 0
 else
     mkdir -p scrollertmp
     cd scrollertmp
-    if [ "$2" == "" ]; then
+    if [ "$font" == "" ]; then
         font="Arial"
-    else
-        font="$2"
     fi
-    if [ "$3" == "" ]; then
+    if [ "$color" == "" ]; then
         color="black"
-    else
-        color="$3"
     fi
-    convert -fill "$color" -font "$font" -pointsize 100 label:"$1" text.png
+    if [ "$background" == "" ]; then
+        background="white"
+    fi
+
+    convert -fill "$color" -font "$font" -background "$background" -pointsize $pointsize label:"$1" text.png
     width=$(identify text.png | cut -d ' ' -f 3 | cut -d 'x' -f 1)
-    newwidth=`expr $width + $width / 7`
+    newwidth=`expr $width + $pointsize \* 2`
     mogrify -gravity center -extent "$newwidth"x128 text.png
     width=$(identify text.png | cut -d ' ' -f 3 | cut -d 'x' -f 1)
     slice=20
