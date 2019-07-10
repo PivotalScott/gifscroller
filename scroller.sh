@@ -22,6 +22,12 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -*|--*) # throws away unknown options
+    # missing argument for unknown option 
+    # would consume $1, triggering usage screen
+    shift # past argument
+    shift # past value
+    ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
     shift # past argument
@@ -29,7 +35,6 @@ case $key in
 esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
-echo "$color  $background  $font  $1"
 
 pointsize=100
 
