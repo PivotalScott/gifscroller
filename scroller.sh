@@ -49,6 +49,9 @@ if [ "$1" == "" ]; then
     echo '        https://imagemagick.org/script/color.php for a more complete listing.'
     echo '        You can also use standard RGB #000000 - #FFFFFF'
     echo ''
+    echo 'If your font list is empty, you can follow the top answer here to fill it:'
+    echo 'https://stackoverflow.com/questions/24696433/why-font-list-is-empty-for-imagemagick'
+    echo ''
     exit 0
 else
     mkdir -p scrollertmp
