@@ -1,5 +1,5 @@
 # gifscroller
-Just bash practice with ImageMagick to create scrolling gif emoji for Slack
+Just bash using ImageMagick to create scrolling gif emoji for Slack
 
 ```
 Usage: ./scroller.sh [options] "Phrase to scroll"
