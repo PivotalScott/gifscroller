@@ -13,4 +13,7 @@ Options:
         Most normally named colors are available for -c or -b, or go to
         https://imagemagick.org/script/color.php for a more complete listing.
         You can also use standard RGB #000000 - #FFFFFF
+
+If your font list is empty, you can follow the top answer here to fill it:
+ https://stackoverflow.com/questions/24696433/why-font-list-is-empty-for-imagemagick
 ```
